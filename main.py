@@ -4,8 +4,14 @@ import numpy as np
 from KPI.calendlyInterviewExtract.checkAndFilterColumns import check_and_filter_columns
 from KPI.calendlyInterviewExtract.removeRowsWithMissingValues import remove_rows_with_missing_values
 from KPI.calendlyInterviewExtract.cleanCreatedAtColumn import clean_created_at_column
+from Google.googleSheetRead import get_sheet_data
 
 # Example usage
+credential_path = "Google/mauel-425211-3ec71dfc9025.json"
+calendly = get_sheet_data(credential_path, "HR", "Calendly_Extract")
+print(calendly)
+exit()
+
 try:
     # Load your CSV into a DataFrame
     data = pd.read_csv(r'Data/Calendly Interview Extract.csv')
