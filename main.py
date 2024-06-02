@@ -1,23 +1,82 @@
-import pandas as pd
-import numpy as np
 
+import pandas as pd
 from KPI.calendlyInterviewExtract.checkAndFilterColumns import check_and_filter_columns
 from KPI.calendlyInterviewExtract.removeRowsWithMissingValues import remove_rows_with_missing_values
 from KPI.calendlyInterviewExtract.cleanCreatedAtColumn import clean_created_at_column
 from Google.googleSheetRead import get_sheet_data
 
-# Example usage
+# Variable Definition
 credential_path = "Google/mauel-425211-3ec71dfc9025.json"
-calendly = get_sheet_data(credential_path, "HR", "Calendly_Extract")
-print(calendly)
-exit()
 
 try:
+    # Reading Data via Google sheet
+    calendly = get_sheet_data(credential_path, "HR", "Calendly_Extract")
+    phone_interview = get_sheet_data(credential_path, "HR", "Phone_Interview_Extract")
+    contract = get_sheet_data(credential_path, "HR", "Contract_Extract")
+    endorsement = get_sheet_data(credential_path, "HR", "Endorsement_Extract")
+    cleaners_history = get_sheet_data(credential_path, "HR", "Cleaners_History_Extract")
+
+    # print(calendly)
+    # print(phone_interview)
+    # print(contract)
+    # print(endorsement)
+    # print(cleaners_history)
+    # *****************************
+
+    # Reading Data Uploaded/ Locally
+    calendly_l = pd.read_csv('Data/Calendly Interview Extract.csv')
+    phone_interview_l = pd.read_csv("Data/Phone Interview Extract Tariq.csv")
+    contract_l = pd.read_csv("Data/Contract Extract Tariq.csv")
+    endorsement_l = pd.read_csv("Data/Endorsement Extract Tariq.csv")
+    cleaners_history_l = pd.read_csv("Data/Cleaner's History Extract (3).csv")
+
+    # print(calendly_l)
+    # print(phone_interview_l)
+    # print(contract_l)
+    # print(endorsement_l)
+    # print(cleaners_history_l)
+    # *****************************
+
+    # 1- Calendly Extract Processing
+    # a- Define Columns - (One Function that take in dataframe local, list of columns and return filtered dataframe.)
+    calendly_shortlist_extract = ['id', 'title', 'createdAt']
+    # b- Define function that take in dataframe and check for all the missing values in all the present columns and
+    # remove them.
+    # c- Find the respected Data column in all extract and convert them to YYYY-MM-DD. The function take in dataframe,
+    # date column name and return update dataframe with respected column turn into date time in YYYY-MM-DD format.
+    # *****************************
+
+    # 2- Phone Interview Extract Processing
+    phone_interview_shortlist_extract = ["id", "createdAt", "custom.reachedStr", "custom.interviewedById",
+                                         "custom.cleanerInterviewScoreNum"]
+
+    # *****************************
+
+    # 3- Contract Extract Processing
+
+    # *****************************
+
+    # 4- Endorsement Extract Processing
+
+    # *****************************
+
+    # 5- Cleaners Extract
+
+    # *****************************
+
+    # Checking uploaded/local data with Google Sheet Data
+
+    # *****************************
+
+    # Append to Google Sheet
+
+    # *****************************
+
     # Load your CSV into a DataFrame
     data = pd.read_csv(r'Data/Calendly Interview Extract.csv')
 
     # Check and filter the DataFrame
-    filtered_data = check_and_filter_columns(data)
+    filtered_data = check_and_filter_columns(data, calendly_shortlist_columns)
     # If filtered_data is None (Amendment needed)
     if filtered_data is not None:
         # Remove rows with missing/null values in the required columns
