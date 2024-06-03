@@ -1,20 +1,21 @@
 
 import pandas as pd
-from KPI.calendlyInterviewExtract.checkAndFilterColumns import check_and_filter_columns
-from KPI.calendlyInterviewExtract.removeRowsWithMissingValues import remove_rows_with_missing_values
-from KPI.calendlyInterviewExtract.cleanCreatedAtColumn import clean_created_at_column
 from Google.googleSheetRead import get_sheet_data
+from dataProcessing.filtringColumns import filter_columns
+from dataProcessing.checkingNull import replace_and_remove
+from dataProcessing.dateProcessing import process_dates
+from dataProcessing.nameProcessing_cleaners import extract_names
 
 # Variable Definition
 credential_path = "Google/mauel-425211-3ec71dfc9025.json"
 
 try:
     # Reading Data via Google sheet
-    calendly = get_sheet_data(credential_path, "HR", "Calendly_Extract")
-    phone_interview = get_sheet_data(credential_path, "HR", "Phone_Interview_Extract")
-    contract = get_sheet_data(credential_path, "HR", "Contract_Extract")
-    endorsement = get_sheet_data(credential_path, "HR", "Endorsement_Extract")
-    cleaners_history = get_sheet_data(credential_path, "HR", "Cleaners_History_Extract")
+    # calendly = get_sheet_data(credential_path, "HR", "Calendly_Extract")
+    # phone_interview = get_sheet_data(credential_path, "HR", "Phone_Interview_Extract")
+    # contract = get_sheet_data(credential_path, "HR", "Contract_Extract")
+    # endorsement = get_sheet_data(credential_path, "HR", "Endorsement_Extract")
+    # cleaners_history = get_sheet_data(credential_path, "HR", "Cleaners_History_Extract")
 
     # print(calendly)
     # print(phone_interview)
@@ -38,30 +39,133 @@ try:
     # *****************************
 
     # 1- Calendly Extract Processing
-    # a- Define Columns - (One Function that take in dataframe local, list of columns and return filtered dataframe.)
     calendly_shortlist_extract = ['id', 'title', 'createdAt']
-    # b- Define function that take in dataframe and check for all the missing values in all the present columns and
-    # remove them.
-    # c- Find the respected Data column in all extract and convert them to YYYY-MM-DD. The function take in dataframe,
-    # date column name and return update dataframe with respected column turn into date time in YYYY-MM-DD format.
+
+    calendly_l = filter_columns(calendly_l, calendly_shortlist_extract)
+    if calendly_l is None:
+        print("Error filtering column calendly.")
+        exit()
+    # print(calendly_l)
+
+    calendly_l = replace_and_remove(calendly_l, "id")
+    if calendly_l is None:
+        print("Error removing and handling Nulls in calendly.")
+        exit()
+    # print(calendly_l)
+
+    calendly_l = process_dates(calendly_l, "createdAt")
+    if calendly_l is None:
+        print("Error processing dates in calendly.")
+        exit()
+    # print(calendly_l)
+    # print(calendly_l.dtypes)
     # *****************************
 
     # 2- Phone Interview Extract Processing
     phone_interview_shortlist_extract = ["id", "createdAt", "custom.reachedStr", "custom.interviewedById",
                                          "custom.cleanerInterviewScoreNum"]
 
+    phone_interview_l = filter_columns(phone_interview_l, phone_interview_shortlist_extract)
+    if phone_interview_l is None:
+        print("Error filtering column phone interview.")
+        exit()
+    # print(phone_interview_l)
+
+    phone_interview_l = replace_and_remove(phone_interview_l, "id")
+    if phone_interview_l is None:
+        print("Error removing and handling Nulls in phone interview.")
+        exit()
+    # print(phone_interview_l)
+
+    phone_interview_l = process_dates(phone_interview_l, "createdAt")
+    if phone_interview_l is None:
+        print("Error processing dates in phone interview.")
+        exit()
+    # print(phone_interview_l)
+    # print(phone_interview_l.dtypes)
     # *****************************
 
     # 3- Contract Extract Processing
+    contract_shortlist_extract = ["id", "preview", "customer.createdAt"]
 
+    contract_l = filter_columns(contract_l, contract_shortlist_extract)
+    if contract_l is None:
+        print("Error filtering column contract.")
+        exit()
+    # print(contract_l)
+
+    contract_l = replace_and_remove(contract_l, "id")
+    if contract_l is None:
+        print("Error removing and handling Nulls in contract.")
+        exit()
+    # print(contract_l)
+
+    contract_l = process_dates(contract_l, "customer.createdAt")
+    if contract_l is None:
+        print("Error processing dates in contract.")
+        exit()
+    # print(contract_l)
+    # print(contract_l.dtypes)
     # *****************************
 
     # 4- Endorsement Extract Processing
+    endorsement_shortlist_extract = ["id", "createdAt", "custom.testCleanScoreStr"]
 
+    endorsement_l = filter_columns(endorsement_l, endorsement_shortlist_extract)
+    if endorsement_l is None:
+        print("Error filtering column endorsement.")
+        exit()
+    # print(endorsement_l)
+
+    endorsement_l = replace_and_remove(endorsement_l, "id")
+    if endorsement_l is None:
+        print("Error removing and handling Nulls in endorsement.")
+        exit()
+    # print(endorsement_l)
+
+    endorsement_l = process_dates(endorsement_l, "createdAt")
+    if endorsement_l is None:
+        print("Error processing dates in endorsement.")
+        exit()
+    # print(endorsement_l)
+    # print(endorsement_l.dtypes)
     # *****************************
 
     # 5- Cleaners Extract
+    cleaners_shortlist_extract = ["id", "name", "displayName", "gender", "custom.statusOfPersonStr",
+                                  "custom.rentalOrOwnEquipmentStr", "custom.dateofHiringAt", "custom.dateOfFiringAt"]
 
+    cleaners_history_l = filter_columns(cleaners_history_l, cleaners_shortlist_extract)
+    if cleaners_history_l is None:
+        print("Error filtering column cleaners.")
+        exit()
+    # print(cleaners_history_l)
+
+    cleaners_history_l = replace_and_remove(cleaners_history_l, "id")
+    if cleaners_history_l is None:
+        print("Error removing and handling Nulls in cleaners.")
+        exit()
+    # print(cleaners_history_l)
+
+    cleaners_history_l = process_dates(cleaners_history_l, "custom.dateofHiringAt")
+    if cleaners_history_l is None:
+        print("Error processing dates in cleaners.")
+        exit()
+    # print(cleaners_history_l)
+    # print(cleaners_history_l.dtypes)
+
+    cleaners_history_l = process_dates(cleaners_history_l, "custom.dateOfFiringAt")
+    if cleaners_history_l is None:
+        print("Error processing dates in cleaners.")
+        exit()
+    # print(cleaners_history_l)
+    # print(cleaners_history_l.dtypes)
+
+    cleaners_history_l = extract_names(cleaners_history_l, 'name')
+    if cleaners_history_l is None:
+        print("Error processing name column in cleaners.")
+        exit()
+    # print(cleaners_history_l['name'])
     # *****************************
 
     # Checking uploaded/local data with Google Sheet Data
@@ -72,25 +176,5 @@ try:
 
     # *****************************
 
-    # Load your CSV into a DataFrame
-    data = pd.read_csv(r'Data/Calendly Interview Extract.csv')
-
-    # Check and filter the DataFrame
-    filtered_data = check_and_filter_columns(data)
-    # If filtered_data is None (Amendment needed)
-    if filtered_data is not None:
-        # Remove rows with missing/null values in the required columns
-        cleaned_data = remove_rows_with_missing_values(filtered_data)
-
-        # Clean the 'createdAt' column
-        cleaned_data = clean_created_at_column(cleaned_data)
-        if cleaned_data is not None:
-            print(cleaned_data.head())
-except FileNotFoundError as e:
-    print(f"File not found: {e}")
-except pd.errors.EmptyDataError as e:
-    print(f"Empty data: {e}")
-except pd.errors.ParserError as e:
-    print(f"Parsing error: {e}")
 except Exception as e:
     print(f"An error occurred: {e}")
