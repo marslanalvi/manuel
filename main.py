@@ -76,7 +76,7 @@ try:
     data = pd.read_csv(r'Data/Calendly Interview Extract.csv')
 
     # Check and filter the DataFrame
-    filtered_data = check_and_filter_columns(data, calendly_shortlist_columns)
+    filtered_data = check_and_filter_columns(data)
     # If filtered_data is None (Amendment needed)
     if filtered_data is not None:
         # Remove rows with missing/null values in the required columns
