@@ -1,14 +1,18 @@
 import streamlit as st
-import pandas as pd
+# import pandas as pd
 
 # Set wide mode layout
 st.set_page_config(page_title="Urbanmop HR Project", layout="wide")
 
 # Function to check if the uploaded file is valid
-def is_valid_file(file):
-    return file is not None and (file.name.endswith('.csv') or file.name.endswith('.xlsx'))
+
+
+def is_valid_file(file1):
+    return file1 is not None and (file1.name.endswith('.csv') or file1.name.endswith('.xlsx'))
 
 # Define a dictionary of file descriptions to placeholders for processing functions
+
+
 processing_functions = {
     "Calendly Interview Extract": "process_calendly",  # Placeholder for the actual processing function
     "Phone Interview Extract Tariq": "process_phone_interview",  # Placeholder for the actual processing function
@@ -17,6 +21,7 @@ processing_functions = {
     "Endorsement Extract Tariq": "process_endorsement",  # Placeholder for the actual processing function
     "Calendly Interview Extract Updated": "process_calendly_updated",  # Placeholder for the actual processing function
 }
+
 
 # Heading
 st.title("Urbanmop HR Project")
