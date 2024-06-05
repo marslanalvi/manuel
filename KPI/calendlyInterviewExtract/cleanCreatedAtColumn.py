@@ -1,35 +1,31 @@
 import pandas as pd
-def clean_created_at_column(df):
+
+
+def format_date_column(df, date_column):
     """
-    Clean the 'createdAt' column to extract the date and format it as YYYY-MM-DD.
+    Convert the specified date column to YYYY-MM-DD format.
 
     Args:
     df (pandas.DataFrame): The DataFrame to clean.
+    date_column (str): The name of the date column to format.
 
     Returns:
-    pandas.DataFrame: The cleaned DataFrame with the 'createdAt' column formatted as YYYY-MM-DD.
+    pandas.DataFrame: The updated DataFrame with the specified date column formatted as YYYY-MM-DD.
     """
     try:
-        # Check if 'createdAt' column exists in the DataFrame
-        if 'createdAt' in df.columns:
-            # Convert 'createdAt' column to datetime
-            df['createdAt'] = pd.to_datetime(df['createdAt'], errors='coerce')
+        # Convert the date column to datetime
+        df[date_column] = pd.to_datetime(df[date_column], errors='coerce')
 
-            # Extract the date and format it as YYYY-MM-DD
-            df['createdAt'] = df['createdAt'].dt.strftime('%Y-%m-%d')
+        # Extract the date and format it as YYYY-MM-DD
+        df[date_column] = df[date_column].dt.strftime('%Y-%m-%d')
 
-            # Drop rows where 'createdAt' could not be parsed and resulted in NaT
-            df = df.dropna(subset=['createdAt'])
+        # Drop rows where the date column could not be parsed and resulted in NaT
+        df = df.dropna(subset=[date_column])
 
-            return df
-        else:
-            print("The 'createdAt' column does not exist in the DataFrame.")
-            return None
+        return df
     except KeyError as e:
-        # Return the exception message if a KeyError is encountered
-        print(str(e))
-        return None
+        # Raise the exception message if a KeyError is encountered
+        raise KeyError(f"Key error encountered: {str(e)}")
     except Exception as e:
-        # Catch any other exceptions that might occur
-        print(str(e))
-        return None
+        # Raise any other exceptions that might occur
+        raise Exception(f"An error occurred: {str(e)}")
