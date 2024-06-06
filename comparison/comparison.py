@@ -1,42 +1,46 @@
-
 import pandas as pd
 
 
-def find_unique_values(db_dataframe, uploaded_dataframe, column_name):
+def find_unique_rows(old_df, new_df, unique_col):
     """
-    Compares the specified column in the uploaded DataFrame with the database DataFrame
-    and returns the unique values present in the uploaded DataFrame.
+    Function to find rows in the old dataframe that have unique IDs not present in the new dataframe.
 
     Parameters:
-    db_dataframe (pd.DataFrame): The database DataFrame.
-    uploaded_dataframe (pd.DataFrame): The uploaded DataFrame.
-    column_name (str): The name of the column to compare.
+    old_df (pd.DataFrame): The old dataframe.
+    new_df (pd.DataFrame): The new dataframe.
+    unique_col (str): The column name which holds unique values.
 
     Returns:
-    pd.Series: A Series containing unique values in the uploaded DataFrame's specified column.
-    None: If an error occurs during the process.
+    pd.DataFrame: DataFrame containing unique rows from the old dataframe.
     """
     try:
-        # Check if inputs are pandas DataFrames
-        if not isinstance(db_dataframe, pd.DataFrame) or not isinstance(uploaded_dataframe, pd.DataFrame):
-            print("Both db_dataframe and uploaded_dataframe must be pandas DataFrames.")
+        # Check if the inputs are pandas DataFrames
+        if not isinstance(old_df, pd.DataFrame) or not isinstance(new_df, pd.DataFrame):
+            print("Both inputs must be pandas DataFrames.")
             return None
 
-        # Check if column_name is a string
-        if not isinstance(column_name, str):
-            print("The column_name parameter must be a string.")
+        # Check for the unique column in both DataFrames
+        if unique_col not in old_df.columns or unique_col not in new_df.columns:
+            print(f"'{unique_col}' column must be present in both DataFrames.")
             return None
 
-        # Check if the specified column exists in both DataFrames
-        if column_name not in db_dataframe.columns or column_name not in uploaded_dataframe.columns:
-            print(f"The column '{column_name}' must be present in both DataFrames.")
-            return None
+        # Convert the unique column to string and strip any leading/trailing whitespace
+        old_df[unique_col] = old_df[unique_col].astype(str).str.strip()
+        new_df[unique_col] = new_df[unique_col].astype(str).str.strip()
 
-        # Find unique values in the uploaded DataFrame that are not in the database DataFrame
-        unique_values = uploaded_dataframe[~uploaded_dataframe[column_name].isin(db_dataframe[column_name])]
+        # Find unique IDs in the old dataframe that are not in the new dataframe
+        unique_ids_in_old_df = set(old_df[unique_col]).difference(set(new_df[unique_col]))
 
-        return unique_values
+        # Extract the rows with these unique IDs
+        unique_rows_in_old_df = old_df[old_df[unique_col].isin(unique_ids_in_old_df)]
+
+        return unique_rows_in_old_df
 
     except Exception as e:
+        # Handle any other exception that might occur
         print(f"An error occurred: {e}")
         return None
+
+# Example usage:
+# unique_rows = find_unique_rows(old_df, new_df, 'id')
+# print(unique_rows)

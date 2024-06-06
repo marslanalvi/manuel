@@ -5,13 +5,14 @@ from dataProcessing.filtringColumns import filter_columns
 from dataProcessing.checkingNull import replace_and_remove
 from dataProcessing.dateProcessing import process_dates
 from dataProcessing.nameProcessing_cleaners import extract_names
+from comparison.comparison import find_unique_rows
 
 # Variable Definition
 credential_path = "Google/mauel-425211-3ec71dfc9025.json"
 
 try:
     # Reading Data via Google sheet
-    # calendly = get_sheet_data(credential_path, "HR", "Calendly_Extract")
+    calendly = get_sheet_data(credential_path, "HR", "Calendly_Extract")
     # phone_interview = get_sheet_data(credential_path, "HR", "Phone_Interview_Extract")
     # contract = get_sheet_data(credential_path, "HR", "Contract_Extract")
     # endorsement = get_sheet_data(credential_path, "HR", "Endorsement_Extract")
@@ -25,7 +26,7 @@ try:
     # *****************************
 
     # Reading Data Uploaded/ Locally
-    calendly_l = pd.read_csv('Data/Calendly Interview Extract.csv')
+    calendly_l = pd.read_csv('Data/Calendly Extract Tariq.csv')
     phone_interview_l = pd.read_csv("Data/Phone Interview Extract Tariq.csv")
     contract_l = pd.read_csv("Data/Contract Extract Tariq.csv")
     endorsement_l = pd.read_csv("Data/Endorsement Extract Tariq.csv")
@@ -168,8 +169,13 @@ try:
     # print(cleaners_history_l['name'])
     # *****************************
 
-    # Checking uploaded/local data with Google Sheet Data
+    # 6- L27 for Quality of Hire Tracker
+    calendly_l.to_csv("calendly.csv", index=False)
+    # *****************************
 
+    # Checking uploaded/local data with Google Sheet Data
+    calendly_u = find_unique_rows(calendly, calendly_l, 'id')
+    print(calendly_u)
     # *****************************
 
     # Append to Google Sheet
