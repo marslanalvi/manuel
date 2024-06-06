@@ -36,6 +36,7 @@ if uploaded_files:
             # Read the uploaded file into a DataFrame
             if all(col in df.columns for col in required_columns):
                 st.success(f"File '{file_name}' has the required columns: {required_columns}")
+                st.write(df.head(5))  # Display the first 5 rows of the DataFrame
                 # Perform specific processing for this file
                 # Add your processing logic here
             else:
