@@ -15,7 +15,7 @@ def match_columns_to_key(df_columns):
         "Calendly": ['id', 'title', 'createdAt'],
         "Cleaners History": ["id", "name", "displayName", "gender", "custom.statusOfPersonStr",
                              "custom.rentalOrOwnEquipmentStr", "custom.dateofHiringAt",
-                             "custom.dateOfFiringAt"],
+                             "custom.dateOfFiringAt", 'custom.cleanerCityStr'],
         "Contract": ["id", "preview", "customer.createdAt"],
         "Endorsement": ["id", "createdAt", "custom.testCleanScoreStr"],
         "Phone Interview": ["id", "createdAt", "custom.interviewedById", "custom.cleanerInterviewScoreNum"],

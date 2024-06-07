@@ -1,5 +1,4 @@
 
-import pandas as pd
 from Google.googleSheetRead import get_sheet_data
 from dataProcessing.filtringColumns import filter_columns
 from dataProcessing.checkingNull import replace_and_remove
@@ -26,20 +25,6 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
         # print(contract)
         # print(endorsement)
         # print(cleaners_history)
-        # *****************************
-
-        # Reading Data Uploaded/ Locally
-        # calendly_l = pd.read_csv('Data/Calendly Extract Tariq.csv')
-        # phone_interview_l = pd.read_csv("Data/Phone Interview Extract Tariq.csv")
-        # contract_l = pd.read_csv("Data/Contract Extract Tariq.csv")
-        # endorsement_l = pd.read_csv("Data/Endorsement Extract Tariq.csv")
-        # cleaners_history_l = pd.read_csv("Data/Cleaner's History Extract (3).csv")
-
-        # print(calendly_l)
-        # print(phone_interview_l)
-        # print(contract_l)
-        # print(endorsement_l)
-        # print(cleaners_history_l)
         # *****************************
 
         # 1- Calendly Extract Processing
@@ -138,7 +123,7 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
         # 5- Cleaners Extract
         cleaners_shortlist_extract = ["id", "name", "displayName", "gender", "custom.statusOfPersonStr",
                                       "custom.rentalOrOwnEquipmentStr", "custom.dateofHiringAt",
-                                      "custom.dateOfFiringAt"]
+                                      "custom.dateOfFiringAt", 'custom.cleanerCityStr']
 
         cleaners_history_l = filter_columns(cleaners_history_l, cleaners_shortlist_extract)
         if cleaners_history_l is None:
@@ -174,7 +159,7 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
         # *****************************
 
         # 6- L27 for Quality of Hire Tracker
-        calendly_l.to_csv("calendly.csv", index=False)
+        cleaners_history_l.to_csv("cleaners.csv", index=False)
         # *****************************
 
         # Checking uploaded/local data with Google Sheet Data
@@ -240,3 +225,19 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
 
     except Exception as e:
         print(f"An error occurred: {e}")
+
+
+# Reading Data Uploaded/ Locally
+# calendly_l = pd.read_csv('Data/Calendly Extract Tariq.csv')
+# phone_interview_l = pd.read_csv("Data/Phone Interview Extract Tariq.csv")
+# contract_l = pd.read_csv("Data/Contract Extract Tariq.csv")
+# endorsement_l = pd.read_csv("Data/Endorsement Extract Tariq.csv")
+# cleaners_history_l = pd.read_csv("Data/Cleaner's History Extract Fixed.csv")
+#
+# main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_history_l)
+# print(calendly_l)
+# print(phone_interview_l)
+# print(contract_l)
+# print(endorsement_l)
+# print(cleaners_history_l)
+# *****************************
