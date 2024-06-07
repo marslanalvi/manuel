@@ -6,6 +6,7 @@ from dataProcessing.checkingNull import replace_and_remove
 from dataProcessing.dateProcessing import process_dates
 from dataProcessing.nameProcessing_cleaners import extract_names
 from comparison.comparison import find_unique_rows
+from Google.apeedGSheet import append_dataframe_to_google_sheet
 
 # Variable Definition
 credential_path = "Google/mauel-425211-3ec71dfc9025.json"
@@ -13,10 +14,10 @@ credential_path = "Google/mauel-425211-3ec71dfc9025.json"
 try:
     # Reading Data via Google sheet
     calendly = get_sheet_data(credential_path, "HR", "Calendly_Extract")
-    # phone_interview = get_sheet_data(credential_path, "HR", "Phone_Interview_Extract")
-    # contract = get_sheet_data(credential_path, "HR", "Contract_Extract")
-    # endorsement = get_sheet_data(credential_path, "HR", "Endorsement_Extract")
-    # cleaners_history = get_sheet_data(credential_path, "HR", "Cleaners_History_Extract")
+    phone_interview = get_sheet_data(credential_path, "HR", "Phone_Interview_Extract")
+    contract = get_sheet_data(credential_path, "HR", "Contract_Extract")
+    endorsement = get_sheet_data(credential_path, "HR", "Endorsement_Extract")
+    cleaners_history = get_sheet_data(credential_path, "HR", "Cleaners_History_Extract")
 
     # print(calendly)
     # print(phone_interview)
@@ -175,11 +176,63 @@ try:
 
     # Checking uploaded/local data with Google Sheet Data
     calendly_u = find_unique_rows(calendly, calendly_l, 'id')
-    print(calendly_u)
+    if calendly_u is None:
+        print("Error calculating comparison Calendly.")
+        exit()
+    phone_interview_u = find_unique_rows(phone_interview, phone_interview_l, 'id')
+    if phone_interview_u is None:
+        print("Error calculating comparison Phone Interview.")
+        exit()
+    contract_u = find_unique_rows(contract, contract_l, 'id')
+    if contract_u is None:
+        print("Error calculating comparison Contract")
+        exit()
+    endorsement_u = find_unique_rows(endorsement, endorsement_l, 'id')
+    if endorsement_u is None:
+        print("Error calculating comparison endorsement.")
+        exit()
+    cleaners_history_u = find_unique_rows(cleaners_history, cleaners_history_l, 'id')
+    if cleaners_history_u is None:
+        print("Error calculating comparison cleaners history.")
+        exit()
+    # calendly_u = find_unique_rows(calendly, calendly_l, 'id')
+    # print(calendly_u)
+    # print(phone_interview_u)
+    # print(contract_u)
+    # print(endorsement_u)
+    # print(cleaners_history_u)
     # *****************************
 
     # Append to Google Sheet
+    calendly_result = append_dataframe_to_google_sheet(credential_path, "HR",
+                                                       "Calendly_Extract", calendly_u)
+    if calendly_result is None:
+        print("Appending Google Drive Calendly Error.")
+        exit()
 
+    phone_interview_result = append_dataframe_to_google_sheet(credential_path, "HR",
+                                                              "Phone_Interview_Extract", phone_interview_u)
+    if phone_interview_result is None:
+        print("Appending Google Drive Phone Interview Error.")
+        exit()
+
+    contract_result = append_dataframe_to_google_sheet(credential_path, "HR",
+                                                       "Contract_Extract", contract_u)
+    if contract_result is None:
+        print("Appending Google Drive Contract Error.")
+        exit()
+
+    endorsement_result = append_dataframe_to_google_sheet(credential_path, "HR",
+                                                          "Endorsement_Extract", endorsement_u)
+    if endorsement_result is None:
+        print("Appending Google Drive Endorsement Error.")
+        exit()
+
+    cleaners_history_result = append_dataframe_to_google_sheet(credential_path, "HR",
+                                                               "Cleaners_History_Extract", cleaners_history_u)
+    if cleaners_history_result is None:
+        print("Appending Google Drive Cleaners History Error.")
+        exit()
     # *****************************
 
 except Exception as e:

@@ -29,10 +29,10 @@ def find_unique_rows(old_df, new_df, unique_col):
         new_df[unique_col] = new_df[unique_col].astype(str).str.strip()
 
         # Find unique IDs in the old dataframe that are not in the new dataframe
-        unique_ids_in_old_df = set(old_df[unique_col]).difference(set(new_df[unique_col]))
+        unique_ids_in_old_df = set(new_df[unique_col]).difference(set(old_df[unique_col]))
 
         # Extract the rows with these unique IDs
-        unique_rows_in_old_df = old_df[old_df[unique_col].isin(unique_ids_in_old_df)]
+        unique_rows_in_old_df = new_df[new_df[unique_col].isin(unique_ids_in_old_df)]
 
         return unique_rows_in_old_df
 
