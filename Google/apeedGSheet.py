@@ -5,9 +5,8 @@ import pandas as pd
 
 def append_dataframe_to_google_sheet(creds_file_path, sheet_name, subsheet_name, dataframe):
     try:
-        # Convert any Timestamp objects to strings using .loc[]
-        for col in dataframe.select_dtypes(include=['datetime', 'datetimetz']).columns:
-            dataframe.loc[:, col] = dataframe[col].astype(str)
+        # Convert the entire dataframe to strings
+        dataframe = dataframe.astype(str)
 
         # Authenticate with the downloaded JSON file
         client = gspread.service_account(filename=creds_file_path)
