@@ -7,9 +7,11 @@ from dataProcessing.dateProcessing import process_dates
 from dataProcessing.nameProcessing_cleaners import extract_names
 from comparison.comparison import find_unique_rows
 from Google.apeedGSheet import append_dataframe_to_google_sheet
+from dataProcessing.dateProcessingL27 import convert_date_format_with_error_handling
+from dataProcessing.removeBlanksL27 import remove_null_ratings
 
 
-def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_history_l):
+def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_history_l, l27_hr_l):
     # Variable Definition
     credential_path = "Google/mauel-425211-3ec71dfc9025.json"
 
@@ -20,12 +22,14 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
         contract = get_sheet_data(credential_path, "HR", "Contract_Extract")
         endorsement = get_sheet_data(credential_path, "HR", "Endorsement_Extract")
         cleaners_history = get_sheet_data(credential_path, "HR", "Cleaners_History_Extract")
+        l27_hr = get_sheet_data(credential_path, "HR", "L27_HR")
 
         # print(calendly)
         # print(phone_interview)
         # print(contract)
         # print(endorsement)
         # print(cleaners_history)
+        # print(l27_hr)
         # *****************************
 
         # 1- Calendly Extract Processing
@@ -160,7 +164,32 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
         # *****************************
 
         # 6- L27 for Quality of Hire Tracker
-        # cleaners_history_l.to_excel("Cleaners.xlsx", index=False)
+        l27_shortlist_extract = ["Date", "Full Name", "Rating Value", "Teams Assigned", "Booking ID"]
+
+        l27_hr_l = filter_columns(l27_hr_l, l27_shortlist_extract)
+        if l27_hr_l is None:
+            print("Error filtering column L27 HR.")
+            exit()
+        # print(l27_hr_l)
+
+        l27_hr_l = replace_and_remove(l27_hr_l, "Booking ID")
+        if l27_hr_l is None:
+            print("Error removing and handling Nulls in L27.")
+            exit()
+        # print(l27_hr_l)
+
+        l27_hr_l = remove_null_ratings(l27_hr_l, "Rating Value")
+        if l27_hr_l is None:
+            print("Error removing and handling Nulls in L27.")
+            exit()
+        # print(l27_hr_l["Rating Value"].value_counts())
+
+        l27_hr_l = convert_date_format_with_error_handling(l27_hr_l, "Date")
+        if l27_hr_l is None:
+            print("Error processing dates in endorsement.")
+            exit()
+        # print(l27_hr_l)
+        # print(l27_hr_l.dtypes)
         # *****************************
 
         # Checking uploaded/local data with Google Sheet Data
@@ -184,6 +213,12 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
         if cleaners_history_u is None:
             print("Error calculating comparison cleaners history.")
             exit()
+        l27_hr_u = find_unique_rows(l27_hr, l27_hr_l, "Booking ID")
+        if l27_hr_u is None:
+            print("Error calculating comparison l27.")
+            exit()
+        print(l27_hr_u)
+        exit()
         # calendly_u = find_unique_rows(calendly, calendly_l, 'id')
         # print(calendly_u)
         # print(phone_interview_u)
@@ -229,13 +264,15 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
 
 
 # Reading Data Uploaded/ Locally
-# calendly_l = pd.read_csv('Data/Calendly Extract Tariq.csv')
-# phone_interview_l = pd.read_csv("Data/Phone Interview Extract Tariq.csv")
-# contract_l = pd.read_csv("Data/Contract Extract Tariq.csv")
-# endorsement_l = pd.read_csv("Data/Endorsement Extract Tariq.csv")
-# cleaners_history_l = pd.read_csv("Data/Cleaner's History Extract Fixed.csv")
+import pandas as pd
+calendly_l = pd.read_csv('Data/Calendly Extract Tariq.csv')
+phone_interview_l = pd.read_csv("Data/Phone Interview Extract Tariq.csv")
+contract_l = pd.read_csv("Data/Contract Extract Tariq.csv")
+endorsement_l = pd.read_csv("Data/Endorsement Extract Tariq.csv")
+cleaners_history_l = pd.read_csv("Data/Cleaner's History Extract Fixed.csv")
+l27_hr_l = pd.read_csv("Data/L27_HR.csv")
 #
-# main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_history_l)
+main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_history_l, l27_hr_l)
 # print(calendly_l)
 # print(phone_interview_l)
 # print(contract_l)
