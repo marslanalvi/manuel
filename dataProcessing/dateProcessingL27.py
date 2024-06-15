@@ -1,34 +1,40 @@
 import pandas as pd
+from datetime import datetime
 
 
-def convert_date_format_with_error_handling(df, date_column):
-    """
-    Converts the dates in the specified column of the dataframe to datetime and ensures they are in YYYY-MM-DD format.
-    Handles errors and different date formats.
+def convert_date_column(df, date_column):
+    # Define possible date formats
+    date_formats = [
+        "%Y-%m-%d",
+        "%d-%m-%Y",
+        "%m/%d/%Y",
+        "%m/%d/%y",
+        "%Y/%m/%d",
+        "%d/%m/%Y",
+        "%d/%b/%Y",
+        "%b/%d/%Y",
+        "%d-%b-%Y",
+        "%b-%d-%Y",
+        "%Y-%b-%d",
+        "%d-%m-%y",
+        "%m-%d-%y",
+        "%y-%m-%d"
+    ]
 
-    Args:
-    df (pd.DataFrame): The dataframe containing the date column.
-    date_column (str): The name of the date column to be converted.
-
-    Returns:
-    pd.DataFrame: The updated dataframe with the converted date column.
-    """
-    try:
-        # Try common date formats
-        formats = ['%Y-%m-%d', '%d-%m-%Y', '%m/%d/%Y', '%Y/%m/%d']
-        for fmt in formats:
+    def parse_date(date_str):
+        for fmt in date_formats:
             try:
-                df[date_column] = pd.to_datetime(df[date_column], format=fmt)
-                break
+                return datetime.strptime(date_str, fmt).date()
             except ValueError:
                 continue
+        raise ValueError(f"Unable to parse date: {date_str}")
 
-        # Convert to datetime if not already in datetime format
-        if df[date_column].dtype != 'datetime64[ns]':
-            df[date_column] = pd.to_datetime(df[date_column], errors='raise')
+    try:
+        df[date_column] = df[date_column].apply(parse_date)
+        df[date_column] = df[date_column].apply(lambda x: x.strftime('%Y-%m-%d'))
+        df[date_column] = pd.to_datetime(df[date_column])
+    except ValueError as e:
+        print(f"Error: {e}")
+        raise
 
-        return df
-
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return None
+    return df

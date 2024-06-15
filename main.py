@@ -7,7 +7,7 @@ from dataProcessing.dateProcessing import process_dates
 from dataProcessing.nameProcessing_cleaners import extract_names
 from comparison.comparison import find_unique_rows
 from Google.apeedGSheet import append_dataframe_to_google_sheet
-from dataProcessing.dateProcessingL27 import convert_date_format_with_error_handling
+from dataProcessing.dateProcessingL27 import convert_date_column
 from dataProcessing.removeBlanksL27 import remove_null_ratings
 
 
@@ -184,7 +184,7 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
             exit()
         # print(l27_hr_l["Rating Value"].value_counts())
 
-        l27_hr_l = convert_date_format_with_error_handling(l27_hr_l, "Date")
+        l27_hr_l = convert_date_column(l27_hr_l, "Date")
         if l27_hr_l is None:
             print("Error processing dates in endorsement.")
             exit()
@@ -217,8 +217,7 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
         if l27_hr_u is None:
             print("Error calculating comparison l27.")
             exit()
-        print(l27_hr_u)
-        exit()
+        # print(l27_hr_u)
         # calendly_u = find_unique_rows(calendly, calendly_l, 'id')
         # print(calendly_u)
         # print(phone_interview_u)
@@ -257,6 +256,12 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
         if cleaners_history_result is None:
             print("Appending Google Drive Cleaners History Error.")
             exit()
+
+        l27_hr_result = append_dataframe_to_google_sheet(credential_path, "HR",
+                                                         "L27_HR", l27_hr_u)
+        if l27_hr_result is None:
+            print("Appending Google Drive L27 HR Error.")
+            exit()
         # *****************************
 
     except Exception as e:
@@ -264,15 +269,14 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
 
 
 # Reading Data Uploaded/ Locally
-import pandas as pd
-calendly_l = pd.read_csv('Data/Calendly Extract Tariq.csv')
-phone_interview_l = pd.read_csv("Data/Phone Interview Extract Tariq.csv")
-contract_l = pd.read_csv("Data/Contract Extract Tariq.csv")
-endorsement_l = pd.read_csv("Data/Endorsement Extract Tariq.csv")
-cleaners_history_l = pd.read_csv("Data/Cleaner's History Extract Fixed.csv")
-l27_hr_l = pd.read_csv("Data/L27_HR.csv")
-#
-main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_history_l, l27_hr_l)
+# import pandas as pd
+# calendly_l = pd.read_csv('Data/Calendly Extract Tariq.csv')
+# phone_interview_l = pd.read_csv("Data/Phone Interview Extract Tariq.csv")
+# contract_l = pd.read_csv("Data/Contract Extract Tariq.csv")
+# endorsement_l = pd.read_csv("Data/Endorsement Extract Tariq.csv")
+# cleaners_history_l = pd.read_csv("Data/Cleaner's History Extract Fixed.csv")
+# l27_hr_l = pd.read_csv("Data/L27_HR.csv")
+# main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_history_l, l27_hr_l)
 # print(calendly_l)
 # print(phone_interview_l)
 # print(contract_l)
