@@ -17,8 +17,8 @@ uploaded_files = st.file_uploader("Upload up to six files (.csv or .xlsx)", acce
                                   type=['csv', 'xlsx'])
 
 # Check if maximum 6 files are uploaded
-if uploaded_files and len(uploaded_files) > 6:
-    st.error("Maximum 6 files can be uploaded at a time.")
+if uploaded_files and len(uploaded_files) == 6:
+    st.error("Please upload all Six Files. ")
     st.stop()
 
 # Display success or error messages after file upload
