@@ -9,6 +9,7 @@ from comparison.comparison import find_unique_rows
 from Google.apeedGSheet import append_dataframe_to_google_sheet
 from dataProcessing.dateProcessingL27 import convert_date_column
 from dataProcessing.removeBlanksL27 import remove_null_ratings
+import streamlit as st
 
 
 def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_history_l, l27_hr_l):
@@ -17,12 +18,14 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
 
     try:
         # Reading Data via Google sheet
+        st.success("Accessing the data.")
         calendly = get_sheet_data(credential_path, "HR", "Calendly_Extract")
         phone_interview = get_sheet_data(credential_path, "HR", "Phone_Interview_Extract")
         contract = get_sheet_data(credential_path, "HR", "Contract_Extract")
         endorsement = get_sheet_data(credential_path, "HR", "Endorsement_Extract")
         cleaners_history = get_sheet_data(credential_path, "HR", "Cleaners_History_Extract")
         l27_hr = get_sheet_data(credential_path, "HR", "L27_HR")
+        st.success("Data accessed successfully.")
 
         # print(calendly)
         # print(phone_interview)
@@ -37,20 +40,24 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
 
         calendly_l = filter_columns(calendly_l, calendly_shortlist_extract)
         if calendly_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error filtering column calendly.")
             exit()
         # print(calendly_l)
 
         calendly_l = replace_and_remove(calendly_l, "id")
         if calendly_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error removing and handling Nulls in calendly.")
             exit()
         # print(calendly_l)
 
         calendly_l = process_dates(calendly_l, "createdAt")
         if calendly_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error processing dates in calendly.")
             exit()
+        st.success("Successfully processed Calendly Extract.")
         # print(calendly_l)
         # print(calendly_l.dtypes)
         # *****************************
@@ -61,20 +68,24 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
 
         phone_interview_l = filter_columns(phone_interview_l, phone_interview_shortlist_extract)
         if phone_interview_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error filtering column phone interview.")
             exit()
         # print(phone_interview_l)
 
         phone_interview_l = replace_and_remove(phone_interview_l, "id")
         if phone_interview_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error removing and handling Nulls in phone interview.")
             exit()
         # print(phone_interview_l)
 
         phone_interview_l = process_dates(phone_interview_l, "createdAt")
         if phone_interview_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error processing dates in phone interview.")
             exit()
+        st.success("Successfully processed Phone Interview Extract.")
         # print(phone_interview_l)
         # print(phone_interview_l.dtypes)
         # *****************************
@@ -84,20 +95,24 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
 
         contract_l = filter_columns(contract_l, contract_shortlist_extract)
         if contract_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error filtering column contract.")
             exit()
         # print(contract_l)
 
         contract_l = replace_and_remove(contract_l, "id")
         if contract_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error removing and handling Nulls in contract.")
             exit()
         # print(contract_l)
 
         contract_l = process_dates(contract_l, "customer.createdAt")
         if contract_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error processing dates in contract.")
             exit()
+        st.success("Successfully processed Phone Contract Extract.")
         # print(contract_l)
         # print(contract_l.dtypes)
         # *****************************
@@ -107,20 +122,24 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
 
         endorsement_l = filter_columns(endorsement_l, endorsement_shortlist_extract)
         if endorsement_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error filtering column endorsement.")
             exit()
         # print(endorsement_l)
 
         endorsement_l = replace_and_remove(endorsement_l, "id")
         if endorsement_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error removing and handling Nulls in endorsement.")
             exit()
         # print(endorsement_l)
 
         endorsement_l = process_dates(endorsement_l, "createdAt")
         if endorsement_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error processing dates in endorsement.")
             exit()
+        st.success("Successfully processed Endorsement Contract Extract.")
         # print(endorsement_l)
         # print(endorsement_l.dtypes)
         # *****************************
@@ -132,18 +151,21 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
 
         cleaners_history_l = filter_columns(cleaners_history_l, cleaners_shortlist_extract)
         if cleaners_history_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error filtering column cleaners.")
             exit()
         # print(cleaners_history_l)
 
         cleaners_history_l = replace_and_remove(cleaners_history_l, "id")
         if cleaners_history_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error removing and handling Nulls in cleaners.")
             exit()
         # print(cleaners_history_l)
 
         cleaners_history_l = process_dates(cleaners_history_l, "custom.dateofHiringAt")
         if cleaners_history_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error processing dates in cleaners.")
             exit()
         # print(cleaners_history_l)
@@ -151,6 +173,7 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
 
         cleaners_history_l = process_dates(cleaners_history_l, "custom.dateOfFiringAt")
         if cleaners_history_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error processing dates in cleaners.")
             exit()
         # print(cleaners_history_l)
@@ -158,8 +181,10 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
 
         cleaners_history_l = extract_names(cleaners_history_l, 'name')
         if cleaners_history_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error processing name column in cleaners.")
             exit()
+        st.success("Successfully processed Cleaners Extract.")
         # print(cleaners_history_l['name'])
         # *****************************
 
@@ -168,26 +193,31 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
 
         l27_hr_l = filter_columns(l27_hr_l, l27_shortlist_extract)
         if l27_hr_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error filtering column L27 HR.")
             exit()
         # print(l27_hr_l)
 
         l27_hr_l = replace_and_remove(l27_hr_l, "Booking ID")
         if l27_hr_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error removing and handling Nulls in L27.")
             exit()
         # print(l27_hr_l)
 
         l27_hr_l = remove_null_ratings(l27_hr_l, "Rating Value")
         if l27_hr_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error removing and handling Nulls in L27.")
             exit()
         # print(l27_hr_l["Rating Value"].value_counts())
 
         l27_hr_l = convert_date_column(l27_hr_l, "Date")
         if l27_hr_l is None:
+            st.error("Error in Uploaded Data Processing.")
             print("Error processing dates in endorsement.")
             exit()
+        st.success("Successfully processed L27 Extract.")
         # print(l27_hr_l)
         # print(l27_hr_l.dtypes)
         # *****************************
@@ -195,28 +225,35 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
         # Checking uploaded/local data with Google Sheet Data
         calendly_u = find_unique_rows(calendly, calendly_l, 'id')
         if calendly_u is None:
+            st.error("Error in Data Comparing.")
             print("Error calculating comparison Calendly.")
             exit()
         phone_interview_u = find_unique_rows(phone_interview, phone_interview_l, 'id')
         if phone_interview_u is None:
+            st.error("Error in Data Comparing.")
             print("Error calculating comparison Phone Interview.")
             exit()
         contract_u = find_unique_rows(contract, contract_l, 'id')
         if contract_u is None:
+            st.error("Error in Data Comparing.")
             print("Error calculating comparison Contract")
             exit()
         endorsement_u = find_unique_rows(endorsement, endorsement_l, 'id')
         if endorsement_u is None:
+            st.error("Error in Data Comparing.")
             print("Error calculating comparison endorsement.")
             exit()
         cleaners_history_u = find_unique_rows(cleaners_history, cleaners_history_l, 'id')
         if cleaners_history_u is None:
+            st.error("Error in Data Comparing.")
             print("Error calculating comparison cleaners history.")
             exit()
         l27_hr_u = find_unique_rows(l27_hr, l27_hr_l, "Booking ID")
         if l27_hr_u is None:
+            st.error("Error in Data Comparing.")
             print("Error calculating comparison l27.")
             exit()
+        st.success("Data Compared Successfully.")
         # print(l27_hr_u)
         # calendly_u = find_unique_rows(calendly, calendly_l, 'id')
         # print(calendly_u)
@@ -230,41 +267,50 @@ def main(calendly_l, phone_interview_l, contract_l, endorsement_l, cleaners_hist
         calendly_result = append_dataframe_to_google_sheet(credential_path, "HR",
                                                            "Calendly_Extract", calendly_u)
         if calendly_result is None:
+            st.error("Error updating Database Google Sheets.")
             print("Appending Google Drive Calendly Error.")
             exit()
 
         phone_interview_result = append_dataframe_to_google_sheet(credential_path, "HR",
                                                                   "Phone_Interview_Extract", phone_interview_u)
         if phone_interview_result is None:
+            st.error("Error updating Database Google Sheets.")
             print("Appending Google Drive Phone Interview Error.")
             exit()
 
         contract_result = append_dataframe_to_google_sheet(credential_path, "HR",
                                                            "Contract_Extract", contract_u)
         if contract_result is None:
+            st.error("Error updating Database Google Sheets.")
             print("Appending Google Drive Contract Error.")
             exit()
 
         endorsement_result = append_dataframe_to_google_sheet(credential_path, "HR",
                                                               "Endorsement_Extract", endorsement_u)
         if endorsement_result is None:
+            st.error("Error updating Database Google Sheets.")
             print("Appending Google Drive Endorsement Error.")
             exit()
 
         cleaners_history_result = append_dataframe_to_google_sheet(credential_path, "HR",
                                                                    "Cleaners_History_Extract", cleaners_history_u)
         if cleaners_history_result is None:
+            st.error("Error updating Database Google Sheets.")
             print("Appending Google Drive Cleaners History Error.")
             exit()
 
         l27_hr_result = append_dataframe_to_google_sheet(credential_path, "HR",
                                                          "L27_HR", l27_hr_u)
         if l27_hr_result is None:
+            st.error("Error updating Database Google Sheets.")
             print("Appending Google Drive L27 HR Error.")
             exit()
+
+        st.success("Google Sheet Database updated Successfully.")
         # *****************************
 
     except Exception as e:
+        st.error(e)
         print(f"An error occurred: {e}")
 
 

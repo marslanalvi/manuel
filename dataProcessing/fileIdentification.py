@@ -19,7 +19,7 @@ def match_columns_to_key(df_columns):
         "Contract": ["id", "preview", "customer.createdAt"],
         "Endorsement": ["id", "createdAt", "custom.testCleanScoreStr"],
         "Phone Interview": ["id", "createdAt", "custom.interviewedById", "custom.cleanerInterviewScoreNum"],
-        "Dummy file": ["custom.reachedStr", "custom.interviewedById"]
+        "L27 HR": ["Date", "Rating Value", "Teams Assigned", "Booking ID"]
     }
 
     for key, required_columns in required_columns_dict.items():
